@@ -63,13 +63,34 @@ char* cdfunction(char path[]){
     char* path2 = path;
     int flag = 0;
     // ======================================================
-
-    // Recebendo o caminho do diretório =====================
-    printf("\n cd>");
-    scanf("%s", path);
+    // Crinado processo para funcão CD ======================
+    pid_t pid = fork();
+    printf("   %d  ", pid);
     // ======================================================
 
+    // Verificando se o processo foi criado =================
+    if (pid < 0)
+    {
+        perror("fork");
+        printf("02");
+        return EXIT_FAILURE;
+    }
+    // ======================================================  
 
+    // Processo filho executa cd ============================
+    if (pid == 0)
+    {
+        printf("03");
+        for (int i ; i < 100 ; i++){
+            printf("ola eu sou o filho");}
+        exit(EXIT_SUCCESS);
+    }
+    else
+    {
+        wait(NULL);
+        printf("ola eu sou o pai");
+    }
+    // ======================================================
 
 return path2;
 }
@@ -138,4 +159,25 @@ return numero1 + numero2;
     }
     // ======================================================
     printf("Agora você está no diretório %s\n", path);
+
+    // Recebendo o caminho do diretório e tratando entrada ==
+    while (flag == 0)
+    {
+        printf("\n cd>");
+        scanf("%s", path);
+
+        // Verificando se o diretório existe ================
+        if (chdir(path) == 0)
+        {
+            flag = 1;
+        }
+        else
+        {
+            printf("\n diretorio nao encontrado \n");
+        }
+        // ==================================================
+    }
+    // ======================================================
+
+
 */

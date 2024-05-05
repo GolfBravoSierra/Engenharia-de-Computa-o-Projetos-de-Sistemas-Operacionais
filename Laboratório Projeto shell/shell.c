@@ -6,15 +6,15 @@
 #include <sys/wait.h>
 
 // Declaração de Funcções ===================================
-char* cdfunction(char path[]);
-char* pathfunction(char input[], char path[]);
+char* cdfunction(char *path);
+char* pathfunction(char *path);
 int somafunction(int numero1, int numero2);
 // ==========================================================
 
 int main(){
 
     // Declarando variaveis =================================
-    char input [30], output[50], path[30];
+    char input [30], path[30];
     // ======================================================
 
     // Laço infinito ========================================
@@ -39,7 +39,7 @@ int main(){
         }
         else if (strcmp(input, "path") == 0)
         {
-            pathfunction(input, path);
+            printf("ola de comando");
         }
         // ==================================================
     }   
@@ -57,38 +57,41 @@ int main(){
 }
 
 // Função CD ================================================
-char* cdfunction(char path[]){
+char* cdfunction(char *path){
 
     // Declarando variaveis =================================
     char* path2 = path;
-    int flag = 0;
     // ======================================================
+    
     // Crinado processo para funcão CD ======================
     pid_t pid = fork();
-    printf("   %d  ", pid);
     // ======================================================
 
     // Verificando se o processo foi criado =================
     if (pid < 0)
     {
         perror("fork");
-        printf("02");
-        return EXIT_FAILURE;
+        return path2;
     }
     // ======================================================  
 
     // Processo filho executa cd ============================
     if (pid == 0)
     {
-        printf("03");
-        for (int i ; i < 100 ; i++){
-            printf("ola eu sou o filho");}
-        exit(EXIT_SUCCESS);
+
+        // procurando o diretório ===========================
+        if(chdir(path2) != 0) 
+        {
+            perror("chdir");
+            return path;
+        }
+        printf("Agora você está no diretório %s\n", path2);
+        return path2;
+        // ==================================================
     }
     else
     {
         wait(NULL);
-        printf("ola eu sou o pai");
     }
     // ======================================================
 
@@ -98,7 +101,7 @@ return path2;
 
 
 // Função PATH ==============================================
-char* pathfunction(char input[],char path[]){
+char* pathfunction(char *path){
 
     printf("ola vc esta np path");    
 

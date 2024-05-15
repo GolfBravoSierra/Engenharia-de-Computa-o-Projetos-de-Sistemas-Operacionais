@@ -1,0 +1,2 @@
+gcc -o shell shell.c  -L/user/local/lib  -lreadline
+	

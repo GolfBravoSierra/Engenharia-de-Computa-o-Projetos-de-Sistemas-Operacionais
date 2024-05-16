@@ -6,10 +6,11 @@
 #include <sys/wait.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <linux/limits.h>
 
 // Definindo constantes =====================================
 #define palavra_tamanho 30
-#define MAX_WORDS 100
+#define MAX_path 100
 // ==========================================================
 
 // Declaração de Funcções ===================================
@@ -22,10 +23,9 @@ char** split_input(char *input);
 int main(){
 
     // Declarando variaveis =================================
-    char input[30]; 
-    char *path;
-    path = (char*)malloc(30*sizeof(char));
-    char **words = NULL;
+    char input[100] = ""; 
+    char s[600];
+    char **path = NULL;
     // ======================================================
 
 
@@ -38,22 +38,30 @@ int main(){
         // ==================================================
 
         // Recebendo input do usuario =======================
-        strcpy(input, readline("shell>"));
+        if (getcwd(s, 600) == NULL) 
+        {
+            strcpy(input, readline("currenty directory is too big>")); 
+        }
+        else
+        {
+            printf("%s", s);
+            strcpy(input, readline(">"));
+        }
         // ==================================================
 
         // Separando input ==================================
-        words = split_input(input);
-        for (int i = 0; words[i] != NULL; i++) { // TIRE ANTES DE ENTREGAR
-            printf("Palavra %d: %s\n", i, words[i]);
+        path = split_input(input);
+        for (int i = 0; path[i] != NULL; i++) { // TIRE ANTES DE ENTREGAR
+            printf("Palavra %d: %s\n", i, path[i]);
         }
         // ==================================================
 
 
         // Tratamento de entrada ============================
-        if (strcmp(words[0], "cd") == 0)
+        if (strcmp(path[0], "cd") == 0)
         {   
             // Chamando a função CD ==========================
-            *path = cdfunction(words);
+            cdfunction(path);
             // ===============================================
         }
         else if (strcmp(input, "path") == 0)
@@ -65,11 +73,11 @@ int main(){
     // ======================================================
 
     // liberando a memoria alocada ==========================
-    for (int i = 0; words[i] != NULL; i++) 
+    for (int i = 0; path[i] != NULL; i++) 
     {
-        free(words[i]);
+        free(path[i]);
     }       
-    free(words);
+    free(path);
     // ======================================================
 
     // Limpando o Terminal ==================================
@@ -84,12 +92,13 @@ int main(){
 }
 
 // Função CD ================================================
-char* cdfunction(char **words){
+char* cdfunction(char **path){
 
-    printf("ola vc esta np cd ps tirar isso depois"); // TIRE ANTES DE ENTREGAR
+    //printf("ola vc esta np cd ps tirar isso depois"); // TIRE ANTES DE ENTREGAR
+    chdir(path[1]);    
 
-    for (int i = 0; words[i] != NULL; i++) { // TIRE ANTES DE ENTREGAR
-        printf("Palavra %d: %s\n", i, words[i]);
+    for (int i = 0; path[i] != NULL; i++) { // TIRE ANTES DE ENTREGAR
+        printf("Palavra %d: %s\n", i, path[i]);
     }
 
     // Declarando variaveis =================================
@@ -98,7 +107,7 @@ char* cdfunction(char **words){
     // ======================================================
 
 
-return words[1];
+return path[1];
 }
 // ==========================================================
 
@@ -118,7 +127,7 @@ return path;
 char** split_input(char *input) {
 
     // Declarando variaveis =================================
-    char **words = malloc(MAX_WORDS * sizeof(char *));// Aloca memória para um vetor de strings. O número máximo de palavras é definido por MAX_WORDS
+    char **path = malloc(MAX_path * sizeof(char *));// Aloca memória para um vetor de strings. O número máximo de palavras é definido por MAX_path
     char *word;
     int i = 0;
     // ======================================================
@@ -130,17 +139,17 @@ char** split_input(char *input) {
     // Separando a entrada ==================================
     while (word != NULL) 
     {
-        words[i] = malloc(strlen(word) + 1); // Aloca memória para a palavra atual
-        strcpy(words[i], word); // Copia a palavra atual para o vetor de palavras
+        path[i] = malloc(strlen(word) + 1); // Aloca memória para a palavra atual
+        strcpy(path[i], word); // Copia a palavra atual para o vetor de palavras
         i++; 
         word = strtok(NULL, " "); // Chama a função strtok novamente para pegar a próxima palavra
     }
     // ======================================================
 
     // Marcando o final do vetor com NULL ===================
-    words[i] = NULL; // Marca o final do vetor com NULL
+    path[i] = NULL; // Marca o final do vetor com NULL
     // ======================================================
-    return words;
+    return path;
 }
 // ==========================================================
 
